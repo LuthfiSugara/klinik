@@ -1,4 +1,5 @@
 export const SIGNIN = "SIGNIN";
+export const GENDER = "GENDER";
 export const SIGNOUT = "SIGNOUT";
 export const REGISTER = "REGISTER";
 export const ISLOGGEDIN = "ISLOGGEDIN";

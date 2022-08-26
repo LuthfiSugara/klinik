@@ -55,6 +55,7 @@ const Register = ({navigation}) => {
             formData.append('no_hp', values.no_hp);
             formData.append('berat_badan', values.berat_badan);
             formData.append('tinggi_badan', values.tinggi_badan);
+            formData.append('id_level', 2);
             if(foto){
                 formData.append('foto', {
                     uri: foto.assets[0].uri,

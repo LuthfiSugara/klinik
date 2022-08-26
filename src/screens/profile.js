@@ -122,7 +122,7 @@ const Profile = ({navigation}) => {
         showMode('date');
     };
 
-    const {loading:loadingAuth, profile} = useSelector((state) => state.authReducers);
+    const {loading: loadingAuth, profile} = useSelector((state) => state.authReducers);
     const {loading, jk} = useSelector((state) => state.settingReducers);
 
     const loadData = async() => {

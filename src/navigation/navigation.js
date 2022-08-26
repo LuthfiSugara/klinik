@@ -9,6 +9,12 @@ import Register from "../screens/register";
 import Profile from "../screens/profile";
 import Specialist from "../screens/specialist";
 import Dokter from "../screens/dokter";
+import DetailDokter from "../screens/detail-dokter";
+import AddDokter from "../screens/add-dokter";
+import EditDokter from "../screens/edit-dokter";
+import DoctorAppointment from "../screens/doctor-appointment";
+import ChooseDoctor from "../screens/chooseDoctor";
+import History from "../screens/history";
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +61,48 @@ const Navigation = () => {
                         <Stack.Screen
                             name="Dokter" 
                             component={Dokter}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="DetailDokter" 
+                            component={DetailDokter}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="AddDokter" 
+                            component={AddDokter}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="EditDokter" 
+                            component={EditDokter}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="DoctorAppointment" 
+                            component={DoctorAppointment}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="ChooseDoctor" 
+                            component={ChooseDoctor}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="History" 
+                            component={History}
                             options={{
                                 headerShown: false
                             }}

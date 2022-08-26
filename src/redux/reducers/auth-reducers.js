@@ -1,5 +1,6 @@
 import {
     SIGNIN,
+    GENDER,
     ISLOGGEDIN,
     SIGNOUT,
     GET_PROFILE,
@@ -9,6 +10,7 @@ const initialState = {
     loading: true,
     profile: [],
     is_logged_in: false,
+    gender: [],
 }
 
 const authReducers= (state = initialState, action) => {
@@ -36,6 +38,12 @@ const authReducers= (state = initialState, action) => {
                 ...state,
                 loading: false,
                 profile: action.payload
+            }
+        case GENDER:
+            return {
+                ...state,
+                loading: false,
+                gender: action.payload
             }
         default:
             return state;

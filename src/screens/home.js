@@ -47,7 +47,7 @@ const Home = ({navigation}) => {
                             style={tw`w-20 h-20 rounded-full`}
                             source={require('../assets/images/specialist.jpg')}
                         />
-                        <Text style={tw`text-lg font-semibold text-gray-600`}>Spesialis</Text>
+                        <Text style={tw`text-lg font-semibold text-gray-600 text-center`}>Spesialis</Text>
                     </Pressable>
                     <Pressable
                         onPress={() => navigation.navigate('Dokter')}
@@ -57,7 +57,27 @@ const Home = ({navigation}) => {
                             style={tw`w-20 h-20 rounded-full`}
                             source={require('../assets/images/dokter.jpg')}
                         />
-                        <Text style={tw`text-lg font-semibold text-gray-600`}>Dokter</Text>
+                        <Text style={tw`text-lg font-semibold text-gray-600 text-center`}>Dokter</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => navigation.navigate('DoctorAppointment')}
+                        style={tw`w-2/6 px-4 py-8 m-2 items-center rounded-xl`}
+                    >
+                        <Image
+                            style={tw`w-20 h-20 rounded-full`}
+                            source={require('../assets/images/temu-dokter.jpg')}
+                        />
+                        <Text style={tw`text-lg font-semibold text-gray-600 text-center`}>Buat Janji</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => navigation.navigate('History')}
+                        style={tw`w-2/6 px-4 py-8 m-2 items-center rounded-xl`}
+                    >
+                        <Image
+                            style={tw`w-20 h-20 rounded-full`}
+                            source={require('../assets/images/history.jpg')}
+                        />
+                        <Text style={tw`text-lg font-semibold text-gray-600 text-center`}>Riwayat Kunjungan</Text>
                     </Pressable>
                 </View>
             </ScrollView>
