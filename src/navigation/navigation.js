@@ -15,6 +15,11 @@ import EditDokter from "../screens/edit-dokter";
 import DoctorAppointment from "../screens/doctor-appointment";
 import ChooseDoctor from "../screens/chooseDoctor";
 import History from "../screens/history";
+import ProfileKlinik from "../screens/profile-klinik";
+import Consultation from "../screens/consultation";
+import AddConsultation from "../screens/add-consultation";
+import DetailConsultation from "../screens/detail-consultation";
+import SettingPrinter from "../screens/setting-printer";
 
 const Stack = createNativeStackNavigator();
 
@@ -103,6 +108,41 @@ const Navigation = () => {
                         <Stack.Screen
                             name="History" 
                             component={History}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Consultation" 
+                            component={Consultation}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="AddConsultation" 
+                            component={AddConsultation}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="DetailConsultation" 
+                            component={DetailConsultation}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="ProfileKlinik" 
+                            component={ProfileKlinik}
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="SettingPrinter" 
+                            component={SettingPrinter}
                             options={{
                                 headerShown: false
                             }}

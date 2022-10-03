@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useFormik } from 'formik';
 import * as Yup from "yup";
 import {Picker} from '@react-native-picker/picker';
@@ -18,6 +18,9 @@ import {
 import { addDokter } from '../redux/actions/dokter-actions';
 import {launchImageLibrary} from 'react-native-image-picker';
 import { baseUrl } from '../utils/global';
+import { register } from '../redux/actions/auth-actions';
+import { formatRupiah } from '../utils/function';
+import { customStyle } from '../utils/global-style';
 
 const options = {
     title: "Select Image",
@@ -34,12 +37,13 @@ const options = {
 const AddDokter = ({navigation}) => {
 
     const dispatch = useDispatch();
-    const [showPassword, setShowPassword] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
     const [date, setDate] = useState(new Date(format(new Date(), 'yyyy'), format(new Date(), 'M') - 1, format(new Date(), 'd')));
     const [startWork, setStartWork] = useState(new Date(format(new Date(), 'yyyy'), format(new Date(), 'M') - 1, format(new Date(), 'd')));
     const RichText = useRef();
     const [foto, setFoto] = useState();
-    const [previewImage, setPreviewImage] = useState(baseUrl + '/assets/images/default/upload-image.jpg');
+    const [loadPage, setLoadPage] = useState(false);
+    const [previewImage, setPreviewImage] = useState(baseUrl + '/assets/images/default/doctor-male.jpg');
 
     const {values, setFieldValue, handleSubmit, handleReset, errors, touched} = useFormik({
         initialValues: {
@@ -55,7 +59,7 @@ const AddDokter = ({navigation}) => {
             biaya: '',
         },
         onSubmit: values => {
-            console.log("values : ", values);
+            let splitBiaya = values.biaya.split(".");
 
             const formData = new FormData();
             formData.append('nama', values.nama);
@@ -67,7 +71,7 @@ const AddDokter = ({navigation}) => {
             formData.append('tanggal_lahir', values.tanggal_lahir);
             formData.append('mulai_praktek', values.mulai_praktek);
             formData.append('keterangan', values.keterangan);
-            formData.append('biaya', values.biaya);
+            formData.append('biaya', splitBiaya.join(''));
 
             if(foto){
                 formData.append('foto', {
@@ -77,10 +81,10 @@ const AddDokter = ({navigation}) => {
                 });
             }
 
-            dispatch(addDokter(formData))
+            dispatch(register(formData))
             .then(response => {
-                console.log("res : ", response);
                 if(response.status === "success"){
+                    setLoadPage(true);
                     navigation.navigate('Dokter');
                 }
             })
@@ -156,7 +160,6 @@ const AddDokter = ({navigation}) => {
     const onChangeStartWork = (event, selectedDate) => {
         setStartWork(selectedDate);
         setFieldValue('mulai_praktek', format(new Date(selectedDate), 'yyyy/MM/dd'));
-        console.log("start work : ", selectedDate);
     };
 
     const showModeStartWork = (currentMode) => {
@@ -175,17 +178,24 @@ const AddDokter = ({navigation}) => {
 
     const openGallery = async () => {
         const images = await launchImageLibrary(options);
-        setFoto(images);
-        setPreviewImage(images.assets[0].uri);
+        if(!images.didCancel){
+            setFoto(images);
+            setPreviewImage(images.assets[0].uri);
+        }
     }
 
-    return (
+    return loadPage ? (
+        <View style={tw`flex flex-1 justify-center items-center`}>
+            <ActivityIndicator size="large" color="#ff1402" />
+            <Text style='text-center'>Loading....</Text>
+        </View>
+    ) :  (
         <View style={tw`h-full bg-white`}>
             <View style={tw`flex flex-row justify-between p-4 items-center bg-white`}>
                 <Pressable onPress={() => navigation.goBack()}>
                     <Icon name="angle-left" size={30} color="#000000" style={tw`mr-1`} solid />
                 </Pressable>
-                <Text style={tw`text-lg`}>Tambah Dokter</Text>
+                <Text style={tw`text-black`}>Tambah Dokter</Text>
                 <View></View>
             </View>
 
@@ -193,7 +203,7 @@ const AddDokter = ({navigation}) => {
                 <View style={tw`mt-4`}>
                     <Text style={tw`text-gray-500 mb-1`}>Nama Lengkap</Text>
                     <TextInput
-                        style={tw`border border-gray-300 rounded`}
+                        style={tw`border border-gray-300 rounded text-black px-4`}
                         onChangeText={(e) => setFieldValue('nama', e)}
                         value={values.nama}
                     />
@@ -204,7 +214,7 @@ const AddDokter = ({navigation}) => {
                 <View style={tw`mt-4`}>
                     <Text style={tw`text-gray-500 mb-1`}>Email</Text>
                     <TextInput
-                        style={tw`border border-gray-300 rounded`}
+                        style={tw`border border-gray-300 rounded text-black px-4`}
                         onChangeText={(e) => setFieldValue('email', e)}
                         value={values.email}
                     />
@@ -216,13 +226,13 @@ const AddDokter = ({navigation}) => {
                     <Text style={tw`text-gray-500 mb-1`}>Password</Text>
                     <View style={tw`flex flex-row border border-gray-300 rounded`}>
                         <TextInput
-                            style={tw`w-11/12 h-12 px-4`}
+                            style={tw`w-11/12 h-12 px-4 text-black`}
                             onChangeText={(password) => setFieldValue('password', password)}
                             value={values.password}
                             placeholder="******"
                             secureTextEntry={showPassword}
                         />
-                        <Icon style={tw`w-1/12 self-center`} name={showPassword ? "eye-slash" : "eye"} size={20} color="#9e9e9e" onPress={changeIconPassword} />
+                        <Icon style={tw`w-1/12 self-center`} name={showPassword ? "eye-slash" : "eye"} size={15} color="#9e9e9e" onPress={changeIconPassword} />
                     </View>
                     {errors.password && touched.password ? (
                         <Text style={tw`text-red-500`}>{errors.password}</Text>
@@ -239,7 +249,7 @@ const AddDokter = ({navigation}) => {
                             }>
                                 {specialist.map((spesialis, index) => {
                                     return (
-                                        <Picker.Item label={spesialis.name} value={spesialis.id} key={index} />
+                                        <Picker.Item label={spesialis.name} value={spesialis.id} key={index} style={tw`text-black`} />
                                     )
                                 })}
                         </Picker> 
@@ -252,10 +262,11 @@ const AddDokter = ({navigation}) => {
                 <View style={tw`mt-4`}>
                     <Text style={tw`text-gray-500 mb-1`}>Biaya</Text>
                     <TextInput
-                        style={tw`border border-gray-300 rounded`}
-                        onChangeText={(e) => setFieldValue('biaya', e)}
+                        style={tw`border border-gray-300 rounded text-black px-4`}
+                        onChangeText={(e) => setFieldValue('biaya', formatRupiah(e))}
                         value={values.biaya}
                         placeholder="0"
+                        keyboardType="numeric"
                     />
                     {errors.biaya && touched.biaya ? (
                         <Text style={tw`text-red-500`}>{errors.biaya}</Text>
@@ -270,8 +281,8 @@ const AddDokter = ({navigation}) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setFieldValue('id_gender', itemValue)
                             }>
-                                <Picker.Item label="Laki-laki" value="1" />
-                                <Picker.Item label="Perempuan" value="2" />
+                                <Picker.Item label="Laki-laki" value="1" style={tw`text-black`} />
+                                <Picker.Item label="Perempuan" value="2" style={tw`text-black`} />
                         </Picker>
                     </View>
                     {errors.id_gender && touched.id_gender ? (
@@ -282,7 +293,7 @@ const AddDokter = ({navigation}) => {
                 <View style={tw`mt-4`}>
                     <Text style={tw`text-gray-500 mb-1`}>Tanggal Lahir</Text>
                     <Pressable onPress={showDatepicker} style={tw`border border-gray-300 rounded`}>
-                        <Text style={tw`p-4`}>{values.tanggal_lahir ? format(new Date(date), 'dd/MM/yyyy') : ""}</Text>
+                        <Text style={tw`p-4 text-black`}>{values.tanggal_lahir ? format(new Date(date), 'dd/MM/yyyy') : ""}</Text>
                     </Pressable>
                     {errors.tanggal_lahir && touched.tanggal_lahir ? (
                         <Text style={tw`text-red-500`}>{errors.tanggal_lahir}</Text>
@@ -292,61 +303,70 @@ const AddDokter = ({navigation}) => {
                 <View style={tw`mt-4`}>
                     <Text style={tw`text-gray-500 mb-1`}>Mulai Praktek</Text>
                     <Pressable onPress={showStartWorkpicker} style={tw`border border-gray-300 rounded`}>
-                        <Text style={tw`p-4`}>{values.mulai_praktek ? format(new Date(startWork), 'dd/MM/yyyy') : ""}</Text>
+                        <Text style={tw`p-4 text-black`}>{values.mulai_praktek ? format(new Date(startWork), 'dd/MM/yyyy') : ""}</Text>
                     </Pressable>
                     {errors.mulai_praktek && touched.mulai_praktek ? (
                         <Text style={tw`text-red-500`}>{errors.mulai_praktek}</Text>
                     ) : null}
                 </View>
-
-                <TouchableOpacity style={tw`mt-6 pb-4`} onPress={openGallery}>
-                    <View style={tw`w-full flex flex-row justify-center`}>
-                        <Image
-                            style={tw`w-1/2 h-42`}
-                            source={{
-                                uri: previewImage,
-                            }}
-                        />
-                    </View>
-                </TouchableOpacity>
+                
+                <View style={tw`w-full mt-6 pb-4`}>
+                    <Text style={tw`mb-2`}>Foto</Text>
+                    <TouchableOpacity style={tw`mx-auto`} onPress={openGallery}>
+                        <View style={tw`w-1/2 flex flex-row justify-center`}>
+                            <Image
+                                style={[tw`w-1/2 h-42 rounded`, customStyle.aspectSquare]}
+                                source={{
+                                    uri: previewImage,
+                                }}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View>
 
                 <ScrollView style={styles.container}>
                     <Text style={tw`text-gray-500 mb-1`}>Keterangan</Text>
                     {errors.keterangan && touched.keterangan ? (
                         <Text style={tw`text-red-500`}>{errors.keterangan}</Text>
                     ) : null}
-                    <RichToolbar
-                        style={[styles.richBar]}
-                        editor={RichText}
-                        disabled={false}
-                        iconSize={25}
-                        selectedIconTint={"blue"}
-                        actions={[
-                            ...defaultActions,
-                            actions.heading1,
-                        ]}
-                        iconMap={{
-                            [actions.heading1]: ({ tintColor }) => (
-                                <Text style={[styles.tib, { color: tintColor }]}>H1</Text>
-                            ),
-                        }}
-                    />
-                    <RichEditor
-                        disabled={false}
-                        containerStyle={styles.editor}
-                        ref={RichText}
-                        style={styles.rich}
-                        placeholder={"Keterangan Dokter"}
-                        onChange={(text) => setFieldValue('keterangan', text)}
-                    />
-                    <Text></Text>
+                    {!loadPage && <View>
+                            <RichToolbar
+                                style={[styles.richBar]}
+                                editor={RichText}
+                                disabled={false}
+                                iconSize={25}
+                                selectedIconTint={"blue"}
+                                actions={[
+                                    ...defaultActions,
+                                    actions.heading1,
+                                ]}
+                                iconMap={{
+                                    [actions.heading1]: ({ tintColor }) => (
+                                        <Text style={[styles.tib, { color: tintColor }]}>H1</Text>
+                                    ),
+                                }}
+                            />
+                            <RichEditor
+                                disabled={false}
+                                containerStyle={styles.editor}
+                                ref={RichText}
+                                style={styles.rich}
+                                placeholder={"Keterangan Dokter"}
+                                onChange={(text) => setFieldValue('keterangan', text)}
+                            />
+                            <Text></Text>
+                        </View>
+                    }
                 </ScrollView>
             </ScrollView>
             <TouchableOpacity 
-                style={tw`bg-red-500 p-2 mx-4 my-4 rounded-lg`}
-                onPress={handleSubmit}
+                style={tw`bg-red-500 p-3 mx-4 my-4 rounded-lg`}
+                onPress={() => {
+                    setLoadPage(true);
+                    handleSubmit();
+                }}
             >
-                <Text style={tw`text-white text-center text-lg`}>Daftar</Text>
+                <Text style={tw`text-white text-center`}>Daftar</Text>
             </TouchableOpacity>
         </View>
     )

@@ -5,6 +5,7 @@ import settingReducers from "./reducers/setting-reducers";
 import specialistReducers from "./reducers/specialist-reducers";
 import dokterReducers from "./reducers/dokter-reducers";
 import appointmentReducers from "./reducers/appointment-reducers";
+import consultationReducers from "./reducers/consultation-reducers";
 
 const rootReducer = combineReducers(
     {
@@ -13,6 +14,7 @@ const rootReducer = combineReducers(
         specialistReducers,
         dokterReducers,
         appointmentReducers,
+        consultationReducers,
     }
 );
 

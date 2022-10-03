@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { getGender } from "../redux/actions/setting-actions";
 import { register } from "../redux/actions/auth-actions";
 import {launchImageLibrary} from 'react-native-image-picker';
+import { customStyle } from "../utils/global-style";
 
 const options = {
     title: "Select Image",
@@ -144,9 +145,9 @@ const Register = ({navigation}) => {
         <View style={tw`bg-white h-full`}>
             <ScrollView>
                 <View style={tw`p-4`}>
-                    <View style={tw`flex flex-row justify-center mt-8`}>
+                    <View style={tw`flex flex-row justify-center mt-8 w-1/2 mx-auto`}>
                         <Image
-                            style={tw`w-72 h-72`}
+                            style={[tw``, customStyle.aspectSquare]}
                             source={require('../assets/images/second-logo.jpg')}
                         />
                     </View>

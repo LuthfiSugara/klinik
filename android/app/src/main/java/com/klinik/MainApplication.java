@@ -12,6 +12,7 @@ import com.facebook.soloader.SoLoader;
 import com.klinik.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import cn.jystudio.bluetooth.RNBluetoothEscposPrinterPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 

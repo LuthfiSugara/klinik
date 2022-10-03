@@ -33,7 +33,7 @@ const DoctorAppointment = ({navigation}) => {
                 <Pressable onPress={() => navigation.goBack()}>
                     <Icon name="angle-left" size={30} color="#000000" style={tw`mr-1`} solid />
                 </Pressable>
-                <Text style={tw`text-lg`}>Janji Temu Dokter</Text>
+                <Text style={tw``}>Janji Temu Dokter</Text>
                 <Text></Text>
             </View>
 
@@ -43,18 +43,18 @@ const DoctorAppointment = ({navigation}) => {
                         <View style={tw`bg-white flex flex-row p-4 border-b border-gray-300 mb-4`} key={index}>
                             <View style={tw`w-2/6`}>
                                 <Image
-                                    style={[tw`w-11/12 h-42`, customStyle.aspectSquare]}
+                                    style={[tw``, customStyle.aspectSquare, customStyle.w30]}
                                     source={{
                                         uri: baseUrl + d.foto,
                                     }}
                                 />
                             </View>
-                            <View style={tw`w-4/6 pl-4`}>
-                                <Text style={tw`text-xl text-black`}>{d.nama}</Text>
-                                <Text style={tw`text-gray-400 mb-1`}>{d.specialist.name}</Text>
+                            <View style={[tw`pl-0`, customStyle.w70]}>
+                                <Text style={tw`text-black`}>{d.nama}</Text>
+                                <Text style={tw`text-xs text-gray-400 mb-1`}>{d.detail.specialist.name}</Text>
                                 <View style={tw`flex flex-row items-center`}>
-                                    <Icon name="briefcase" size={20} color="#767272" style={tw`mr-1`} solid />
-                                    <Text>{d.lama_kerja}</Text>
+                                    <Icon name="briefcase" size={15} color="#767272" style={tw`mr-1`} solid />
+                                    <Text style={tw`text-xs`}>{d.detail.lama_kerja ? d?.detail?.lama_kerja : ""}</Text>
                                 </View>
                                 <Pressable
                                     onPress={() => redirectToChooseDoctor(d.id)}

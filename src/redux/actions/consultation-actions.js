@@ -4,11 +4,44 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { baseUrl } from "../../utils/global";
 
 import {
-    ADD_APPOINTMENT,
-    HISTORY_APPOINTMENT,
-} from "../types/appointment";
+    GET_CONSULTATION, 
+    GET_DETAIL_CONSULTATION,
+} from "../types/consultation";
 
-export const addAppointment = (request) => async (dispatch) => {
+export const getConsultation = () => {
+    try{
+        return async dispatch => {
+            await AsyncStorage.getItem('userData')
+            .then(value => {
+                if(value != null){
+                    let token = JSON.parse(value);
+                    axios.get(
+                        `${baseUrl}/api/get-consultation`,
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            }
+                        }
+                    ).then(function(response){
+                        if(response.data.status === "success"){
+                            dispatch({
+                                type: GET_CONSULTATION,
+                                payload: response.data.data,
+                            });
+                        }
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                }
+            })
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+export const createConsultation = (request) => async (dispatch) => {
     try{
         let token = "";
         await AsyncStorage.getItem('userData')
@@ -20,7 +53,7 @@ export const addAppointment = (request) => async (dispatch) => {
         });
 
         const req = axios.post(
-            `${baseUrl}/api/add-appointment`, 
+            `${baseUrl}/api/add-consultation`, 
             request,
             {
                 headers: {
@@ -29,7 +62,6 @@ export const addAppointment = (request) => async (dispatch) => {
                 }
             }
         ).then(function(response){
-            console.log("response : ", response.data);
             if(response.data.status === "success"){
                 ToastAndroid.showWithGravityAndOffset(
                     response.data.message,
@@ -59,7 +91,7 @@ export const addAppointment = (request) => async (dispatch) => {
     }
 }
 
-export const historyAppointment = () => {
+export const getDetailConsultation = (id) => {
     try{
         return async dispatch => {
             await AsyncStorage.getItem('userData')
@@ -67,7 +99,7 @@ export const historyAppointment = () => {
                 if(value != null){
                     let token = JSON.parse(value);
                     axios.get(
-                        `${baseUrl}/api/all-appointment`, 
+                        `${baseUrl}/api/get-detail-consultation/${id}`,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
@@ -77,7 +109,7 @@ export const historyAppointment = () => {
                     ).then(function(response){
                         if(response.data.status === "success"){
                             dispatch({
-                                type: HISTORY_APPOINTMENT,
+                                type: GET_DETAIL_CONSULTATION,
                                 payload: response.data.data,
                             });
                         }
@@ -92,41 +124,7 @@ export const historyAppointment = () => {
     }
 }
 
-// export const updateStatusAppointment = () => {
-//     try{
-//         return async dispatch => {
-//             await AsyncStorage.getItem('userData')
-//             .then(value => {
-//                 if(value != null){
-//                     let token = JSON.parse(value);
-//                     axios.get(
-//                         `${baseUrl}/api/update-status-appointment/${id}/${id_status}`, 
-//                         {
-//                             headers: {
-//                                 'Content-Type': 'application/json',
-//                                 'Authorization': 'Bearer ' + token
-//                             }
-//                         }
-//                     ).then(function(response){
-//                         ToastAndroid.showWithGravityAndOffset(
-//                             response.data.message,
-//                             ToastAndroid.LONG,
-//                             ToastAndroid.TOP,
-//                             25,
-//                             50
-//                         );
-//                     }).catch(function(error){
-//                         console.log(error);
-//                     });
-//                 }
-//             })
-//         }
-//     }catch(error){
-//         console.log(error);
-//     }
-// }
-
-export const updateStatusAppointment = (id, id_status) => async (dispatch) => {
+export const createDetailConsultation = (request) => async (dispatch) => {
     try{
         let token = "";
         await AsyncStorage.getItem('userData')
@@ -137,8 +135,9 @@ export const updateStatusAppointment = (id, id_status) => async (dispatch) => {
             }
         });
 
-        const req = axios.get(
-            `${baseUrl}/api/update-status-appointment/${id}/${id_status}`, 
+        const req = axios.post(
+            `${baseUrl}/api/add-detail-consultation`, 
+            request,
             {
                 headers: {
                     'Content-Type': 'application/json',

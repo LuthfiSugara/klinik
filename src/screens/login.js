@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { signIn } from "../redux/actions/auth-actions";
 import DeviceInfo from 'react-native-device-info';
+import { customStyle } from "../utils/global-style";
 
 const Login = ({navigation}) => {
     const dispatch = useDispatch();
@@ -42,10 +43,10 @@ const Login = ({navigation}) => {
         <View style={tw`bg-white h-full`}>
             <ScrollView>
                 <View style={tw`p-4`}>
-                    <View style={tw`flex flex-row justify-center mt-8`}>
+                    <View style={tw`flex flex-row justify-center mt-15 w-1/2 mx-auto`}>
                         <Image
-                            style={tw`w-72 h-72`}
-                            source={require('../assets/images/second-logo.jpg')}
+                            style={[tw``, customStyle.aspectSquare]}
+                            source={require('../assets/images/logo.png')}
                         />
                     </View>
 
@@ -64,13 +65,13 @@ const Login = ({navigation}) => {
                         <Text style={tw`text-black mt-4`}>Password</Text>
                         <View style={tw`flex flex-row border border-gray-300 rounded bg-gray-200`}>
                             <TextInput
-                                style={tw`w-11/12 h-12 px-4`}
+                                style={[tw`h-12 px-4`, customStyle.w90]}
                                 onChangeText={(password) => setFieldValue('password', password)}
                                 value={values.password}
                                 placeholder="******"
                                 secureTextEntry={showPassword}
                             />
-                            <Icon style={tw`w-1/12 self-center`} name={showPassword ? "eye-slash" : "eye"} size={30} color="#9e9e9e" onPress={changeIconPassword} />
+                            <Icon style={[tw`self-center text-center pr-2`, customStyle.w10]} name={showPassword ? "eye-slash" : "eye"} size={20} color="#9e9e9e" onPress={changeIconPassword} />
                         </View>
                         {errors.password && touched.password ? (
                             <Text style={tw`text-red-500`}>{errors.password}</Text>
@@ -78,14 +79,14 @@ const Login = ({navigation}) => {
 
                         <TouchableOpacity 
                             onPress={handleSubmit}
-                            style={tw`bg-red-600 p-2 rounded-full mt-12`}
+                            style={tw`bg-red-600 py-3 rounded-full mt-12`}
                         >
-                            <Text style={tw`text-white text-lg text-center`}>Masuk</Text>
+                            <Text style={tw`text-white text-center`}>Masuk</Text>
                         </TouchableOpacity>
 
                         <View style={tw`flex flex-row justify-center mt-12`}>
-                            <Text style={tw`text-lg font-bold`}>Belum punya akun? </Text>
-                            <Text onPress={() => navigation.navigate('Register')} style={tw`text-lg font-bold text-red-500`}>Daftar</Text>
+                            <Text style={tw`font-bold`}>Belum punya akun? </Text>
+                            <Text onPress={() => navigation.navigate('Register')} style={tw`font-bold text-red-500`}>Daftar</Text>
                         </View>
 
                     </View>

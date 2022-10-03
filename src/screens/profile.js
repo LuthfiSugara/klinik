@@ -35,7 +35,6 @@ const Profile = ({navigation}) => {
     const {values, setFieldValue, handleSubmit, handleReset, errors, touched} = useFormik({
         initialValues: {
             nama: '',
-            email: '',
             password: '',
             tanggal_lahir: '',
             id_gender: '',
@@ -44,11 +43,8 @@ const Profile = ({navigation}) => {
             tinggi_badan: '',
         },
         onSubmit: values => {
-            // console.log("values : ", values);
-            
             const formData = new FormData();
             formData.append('nama', values.nama);
-            formData.append('email', values.email);
             formData.append('password', values.password);
             formData.append('tanggal_lahir', values.tanggal_lahir);
             formData.append('id_gender', values.id_gender);
@@ -68,10 +64,9 @@ const Profile = ({navigation}) => {
                     name: foto.assets[0].fileName,
                 });
             }
-            console.log("form",formData);
+            
             dispatch(updateProfile(formData))
             .then(response => {
-                console.log("data",response);
                 if(response.status === "success"){
                     navigation.navigate('Home');
                 }
@@ -81,10 +76,6 @@ const Profile = ({navigation}) => {
             nama: Yup
                 .string()
                 .required("Tidak boleh kosong!"),
-            email: Yup
-                .string()
-                .required("Tidak boleh kosong!")
-                .email('format email salah'),
             password: Yup
                 .string()
                 .min(6, "Minimal 6 karakter"),
@@ -139,7 +130,6 @@ const Profile = ({navigation}) => {
         setFieldValue('tanggal_lahir', format(new Date(profile.tanggal_lahir), 'yyyy/M/dd'));
         setFieldValue('id_gender', profile.id_gender);
         setFieldValue('no_hp', profile.no_hp);
-        setFieldValue('email', profile.email);
         setFieldValue('berat_badan', profile.berat_badan);
         setFieldValue('tinggi_badan', profile.tinggi_badan);
         setPreviewImage(baseUrl + profile.foto);
@@ -162,16 +152,16 @@ const Profile = ({navigation}) => {
                 <Pressable onPress={() => navigation.goBack()}>
                     <Icon name="angle-left" size={30} color="#000000" style={tw`mr-1`} solid />
                 </Pressable>
-                <Text style={tw`text-lg`}>Profil Pengguna</Text>
+                <Text style={tw`text-black`}>Profil Pengguna</Text>
                 <Text></Text>
             </View>
             <ScrollView>
                 <View>
-                    <Text style={tw`bg-gray-100 px-4 py-2 text-lg text-black`}>Informasi Umum</Text>
+                    <Text style={tw`bg-gray-100 px-4 py-2 text-black`}>Informasi Umum</Text>
                     <View style={tw`bg-white px-4`}>
-                        <Text style={tw`mt-4 mb-1`}>Nama Lengkap</Text>
+                        <Text style={tw`mt-4 mb-1 text-black`}>Nama Lengkap</Text>
                         <TextInput
-                            style={tw`w-full h-12 px-4 border border-gray-300 rounded`}
+                            style={tw`w-full h-12 px-4 border border-gray-300 rounded text-black`}
                             onChangeText={(nama) => setFieldValue('nama', nama)}
                             value={values.nama}
                             placeholder="nama"
@@ -180,33 +170,32 @@ const Profile = ({navigation}) => {
                             <Text style={tw`text-red-500`}>{errors.nama}</Text>
                         ) : null}
 
-                        <Text style={tw`mt-4 mb-1`}>Tanggal Lahir</Text>
+                        <Text style={tw`mt-4 mb-1 text-black`}>Tanggal Lahir</Text>
                         <Pressable onPress={showDatepicker} style={tw`border border-gray-300 rounded`}>
-                            <Text style={tw`p-4`}>{values.tanggal_lahir ? format(new Date(date), 'dd/MM/yyyy') : ""}</Text>
+                            <Text style={tw`p-4 text-black`}>{values.tanggal_lahir ? format(new Date(date), 'dd/MM/yyyy') : ""}</Text>
                         </Pressable>
                         {errors.tanggal_lahir && touched.tanggal_lahir ? (
                             <Text style={tw`text-red-500`}>{errors.tanggal_lahir}</Text>
                         ) : null}
 
-                        <Text style={tw`mt-4 mb-4`}>Jenis Kelamin</Text>
+                        <Text style={tw`mt-4 mb-4 text-black`}>Jenis Kelamin</Text>
                         <View style={tw`flex flex-row justify-between`}>
                             {jk.map((jkUser, index) => {
                                 return (
                                     <View style={tw`flex flex-row justify-center w-1/2`} key={index}>
                                         {values.id_gender == jkUser.id ? 
-                                            <Icon style={tw`self-center mr-2`} name="dot-circle" size={30} color="#e91e63" /> :
-                                            <Icon style={tw`self-center mr-2`} name="circle" size={30} color="#9e9e9e" onPress={() => {
-                                                // setGender(jkUser.name);
+                                            <Icon style={tw`self-center mr-2`} name="dot-circle" size={20} color="#e91e63" /> :
+                                            <Icon style={tw`self-center mr-2`} name="circle" size={20} color="#9e9e9e" onPress={() => {
                                                 setFieldValue('id_gender', jkUser.id);
                                             }} />
                                         }
-                                        <Text style={tw`text-lg font-semibold`}>{jkUser.name}</Text>
+                                        <Text style={tw`font-semibold text-black`}>{jkUser.name}</Text>
                                     </View>
                                 )
                             })}
                         </View>
                         
-                        <Text style={tw`mt-6`}>Foto Profile</Text>
+                        <Text style={tw`mt-6 text-black`}>Foto Profile</Text>
                         <TouchableOpacity style={tw`mt-6 pb-4`} onPress={openGallery}>
                             <View style={tw`w-full flex flex-row justify-center`}>
                                 <Image
@@ -221,18 +210,18 @@ const Profile = ({navigation}) => {
                 </View>
 
                 <View>
-                    <Text style={tw`bg-gray-100 px-4 py-2 text-lg text-black`}>Informasi Keamanan</Text>
+                    <Text style={tw`bg-gray-100 px-4 py-2 text-black`}>Informasi Keamanan</Text>
                     <View style={tw`px-4 pb-4`}>
-                        <Text style={tw`mt-4 mb-1`}>Password</Text>
+                        <Text style={tw`mt-4 mb-1 text-black`}>Password</Text>
                         <View style={tw`flex flex-row border border-gray-300 rounded`}>
                             <TextInput
-                                style={tw`w-11/12 h-12 px-4`}
+                                style={tw`w-11/12 h-12 px-4 text-black`}
                                 onChangeText={(password) => setFieldValue('password', password)}
                                 value={values.password}
                                 placeholder="******"
                                 secureTextEntry={showPassword}
                             />
-                            <Icon style={tw`w-1/12 self-center`} name={showPassword ? "eye-slash" : "eye"} size={20} color="#9e9e9e" onPress={changeIconPassword} />
+                            <Icon style={tw`w-1/12 self-center`} name={showPassword ? "eye-slash" : "eye"} size={15} color="#9e9e9e" onPress={changeIconPassword} />
                         </View>
                         {errors.password && touched.password ? (
                             <Text style={tw`text-red-500`}>{errors.password}</Text>
@@ -241,11 +230,11 @@ const Profile = ({navigation}) => {
                 </View>
 
                 <View>
-                    <Text style={tw`bg-gray-100 px-4 py-2 text-lg text-black`}>Informasi Kontak</Text>
+                    <Text style={tw`bg-gray-100 px-4 py-2 text-black`}>Informasi Kontak</Text>
                     <View style={tw`px-4 pb-4`}>
                         <Text style={tw`mt-4 mb-1`}>Nomor Handphone</Text>
                         <TextInput
-                            style={tw`w-full h-12 px-4 border border-gray-300 rounded`}
+                            style={tw`w-full h-12 px-4 border border-gray-300 rounded text-black`}
                             onChangeText={(phone) => setFieldValue('no_hp', phone)}
                             value={values.no_hp}
                             placeholder="08*****"
@@ -256,24 +245,16 @@ const Profile = ({navigation}) => {
                         ) : null}
 
                         <Text style={tw`mt-4 mb-1`}>Email</Text>
-                        <TextInput
-                            style={tw`w-full h-12 px-4 border border-gray-300 rounded`}
-                            onChangeText={(email) => setFieldValue('email', email)}
-                            value={values.email}
-                            placeholder="example@gmail.com"
-                        />
-                        {errors.email && touched.email ? (
-                            <Text style={tw`text-red-500`}>{errors.email}</Text>
-                        ) : null}
+                        <Text style={tw`border border-gray-300 rounded p-3 text-black`}>{profile.email}</Text>
                     </View>
                 </View>
 
                 <View>
-                    <Text style={tw`bg-gray-100 px-4 py-2 text-lg text-black`}>Informasi Tambahan</Text>
+                    <Text style={tw`bg-gray-100 px-4 py-2 text-black`}>Informasi Tambahan</Text>
                     <View style={tw`px-4`}>
-                        <Text style={tw`mt-4 mb-1`}>Berat Badan</Text>
+                        <Text style={tw`mt-4 mb-1 text-black`}>Berat Badan</Text>
                         <TextInput
-                            style={tw`w-full h-12 px-4 border border-gray-300 rounded`}
+                            style={tw`w-full h-12 px-4 border border-gray-300 rounded text-black`}
                             onChangeText={(event) => setFieldValue('berat_badan', event)}
                             value={values.berat_badan}
                             placeholder="0"
@@ -283,9 +264,9 @@ const Profile = ({navigation}) => {
                             <Text style={tw`text-red-500`}>{errors.berat_badan}</Text>
                         ) : null}
 
-                        <Text style={tw`mt-4 mb-1`}>Tinggi Badan</Text>
+                        <Text style={tw`mt-4 mb-1 text-black`}>Tinggi Badan</Text>
                         <TextInput
-                            style={tw`w-full h-12 px-4 border border-gray-300 rounded`}
+                            style={tw`w-full h-12 px-4 border border-gray-300 rounded text-black`}
                             onChangeText={(event) => setFieldValue('tinggi_badan', event)}
                             value={values.tinggi_badan}
                             placeholder="0"
@@ -300,9 +281,9 @@ const Profile = ({navigation}) => {
 
             <TouchableOpacity 
                 onPress={handleSubmit}
-                style={tw`bg-red-600 p-2 rounded-full mt-6 mx-4`}
+                style={tw`bg-red-600 p-3 rounded-full mt-6 mx-4`}
             >
-                <Text style={tw`text-white text-lg text-center`}>Simpan Perubahan</Text>
+                <Text style={tw`text-white text-center`}>Simpan</Text>
             </TouchableOpacity>
         </View>
     )

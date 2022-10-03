@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useFormik } from 'formik';
 import * as Yup from "yup";
 import {Picker} from '@react-native-picker/picker';
@@ -15,10 +15,12 @@ import {
     RichEditor,
     RichToolbar,
 } from "react-native-pell-rich-editor";
-import { addDokter, detailDokter, editDokter } from '../redux/actions/dokter-actions';
+import { detailDokter, editDokter } from '../redux/actions/dokter-actions';
 import {launchImageLibrary} from 'react-native-image-picker';
 import { baseUrl } from '../utils/global';
 import { getGender } from '../redux/actions/setting-actions';
+import { customStyle } from '../utils/global-style';
+import { formatRupiah } from '../utils/function';
 
 const options = {
     title: "Select Image",
@@ -36,13 +38,14 @@ const EditDokter = ({navigation, route}) => {
     const { idDokter } = route.params;
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(true);
+    const [loadPage, setLoadPage] = useState(false);
     
     const RichText = useRef();
     const [foto, setFoto] = useState();
     
 
-    const {loading, specialist} = useSelector((state) => state.specialistReducers);
-    const {detail_dokter} = useSelector((state) => state.dokterReducers);
+    const {specialist} = useSelector((state) => state.specialistReducers);
+    const {loading, detail_dokter} = useSelector((state) => state.dokterReducers);
     const {gender} = useSelector((state) => state.authReducers);
 
     const loadData = async() => {
@@ -56,23 +59,23 @@ const EditDokter = ({navigation, route}) => {
     }, []);
 
     const [date, setDate] = useState(new Date(format(new Date(detail_dokter.tanggal_lahir), 'yyyy'), format(new Date(detail_dokter.tanggal_lahir), 'M') - 1, format(new Date(detail_dokter.tanggal_lahir), 'd')));
-    const [startWork, setStartWork] = useState(new Date(format(new Date(detail_dokter.mulai_praktek), 'yyyy'), format(new Date(detail_dokter.mulai_praktek), 'M') - 1, format(new Date(detail_dokter.mulai_praktek), 'd')));
+    const [startWork, setStartWork] = useState(new Date(format(new Date(detail_dokter?.detail?.mulai_praktek), 'yyyy'), format(new Date(detail_dokter?.detail?.mulai_praktek), 'M') - 1, format(new Date(detail_dokter?.detail?.mulai_praktek), 'd')));
     const [previewImage, setPreviewImage] = useState(baseUrl + detail_dokter.foto);
 
     const {values, setFieldValue, handleSubmit, handleReset, errors, touched} = useFormik({
         initialValues: {
             nama: detail_dokter.nama,
             password: '',
-            id_specialist: detail_dokter.id_specialist,
+            id_specialist: detail_dokter?.detail?.id_specialist,
             id_gender: detail_dokter.id_gender,
             tanggal_lahir: detail_dokter.tanggal_lahir,
-            mulai_praktek: detail_dokter.mulai_praktek,
-            keterangan: detail_dokter.keterangan,
-            biaya: detail_dokter.biaya,
+            mulai_praktek: detail_dokter?.detail?.mulai_praktek,
+            keterangan: detail_dokter?.detail?.keterangan,
+            biaya: formatRupiah(detail_dokter?.detail?.biaya),
         },
         onSubmit: values => {
-            // console.log("values : ", values);
-
+            let splitBiaya = values.biaya.split(".");
+            
             const formData = new FormData();
             formData.append('nama', values.nama);
             if(values.password != ''){
@@ -83,7 +86,7 @@ const EditDokter = ({navigation, route}) => {
             formData.append('tanggal_lahir', values.tanggal_lahir);
             formData.append('mulai_praktek', values.mulai_praktek);
             formData.append('keterangan', values.keterangan);
-            formData.append('biaya', values.biaya);
+            formData.append('biaya', splitBiaya.join(''));
             if(foto){
                 formData.append('foto', {
                     uri: foto.assets[0].uri,
@@ -91,11 +94,11 @@ const EditDokter = ({navigation, route}) => {
                     name: foto.assets[0].fileName,
                 });
             }
-            console.log("form : ", formData);
 
             dispatch(editDokter(formData, idDokter))
             .then(response => {
                 if(response.status === "success"){
+                    setLoadPage(true);
                     navigation.goBack();
                 }
             })
@@ -156,7 +159,6 @@ const EditDokter = ({navigation, route}) => {
     const onChangeStartWork = (event, selectedDate) => {
         setStartWork(selectedDate);
         setFieldValue('mulai_praktek', format(new Date(selectedDate), 'yyyy/MM/dd'));
-        console.log("start work : ", selectedDate);
     };
 
     const showModeStartWork = (currentMode) => {
@@ -175,13 +177,18 @@ const EditDokter = ({navigation, route}) => {
 
     const openGallery = async () => {
         const images = await launchImageLibrary(options);
-        setFoto(images);
-        setPreviewImage(images.assets[0].uri);
+        if(!images.didCancel){
+            setFoto(images);
+            setPreviewImage(images.assets[0].uri);
+        }
     }
 
-    console.log("gender : ", gender);
-
-    return (
+    return loadPage ? (
+        <View style={tw`flex flex-1 justify-center items-center`}>
+            <ActivityIndicator size="large" color="#ff1402" />
+            <Text style='text-center'>Loading....</Text>
+        </View>
+    ) : (
         <View style={tw`h-full bg-white`}>
             <View style={tw`flex flex-row justify-between p-4 items-center bg-white`}>
                 <Pressable onPress={() => navigation.goBack()}>
@@ -195,7 +202,7 @@ const EditDokter = ({navigation, route}) => {
                 <View style={tw`mt-4`}>
                     <Text style={tw`text-gray-500 mb-1`}>Nama Lengkap</Text>
                     <TextInput
-                        style={tw`border border-gray-300 rounded`}
+                        style={tw`border border-gray-300 rounded px-4`}
                         onChangeText={(e) => setFieldValue('nama', e)}
                         value={values.nama}
                     />
@@ -213,7 +220,7 @@ const EditDokter = ({navigation, route}) => {
                             placeholder="******"
                             secureTextEntry={showPassword}
                         />
-                        <Icon style={tw`w-1/12 self-center`} name={showPassword ? "eye-slash" : "eye"} size={20} color="#9e9e9e" onPress={changeIconPassword} />
+                        <Icon style={tw`w-1/12 self-center`} name={showPassword ? "eye-slash" : "eye"} size={15} color="#9e9e9e" onPress={changeIconPassword} />
                     </View>
                     {errors.password && touched.password ? (
                         <Text style={tw`text-red-500`}>{errors.password}</Text>
@@ -243,10 +250,11 @@ const EditDokter = ({navigation, route}) => {
                 <View style={tw`mt-4`}>
                     <Text style={tw`text-gray-500 mb-1`}>Biaya</Text>
                     <TextInput
-                        style={tw`border border-gray-300 rounded`}
-                        onChangeText={(e) => setFieldValue('biaya', e)}
+                        style={tw`border border-gray-300 rounded px-4`}
+                        onChangeText={(e) => setFieldValue('biaya', formatRupiah(e))}
                         value={values.biaya.toString()}
                         placeholder="0"
+                        keyboardType="numeric"
                     />
                     {errors.biaya && touched.biaya ? (
                         <Text style={tw`text-red-500`}>{errors.biaya}</Text>
@@ -294,9 +302,9 @@ const EditDokter = ({navigation, route}) => {
                 </View>
 
                 <TouchableOpacity style={tw`mt-6 pb-4`} onPress={openGallery}>
-                    <View style={tw`w-full flex flex-row justify-center`}>
+                    <View style={tw`w-1/2 mx-auto flex flex-row justify-center`}>
                         <Image
-                            style={tw`w-1/2 h-42`}
+                            style={[tw`w-1/2 h-42 rounded`, customStyle.aspectSquare]}
                             source={{
                                 uri: previewImage,
                             }}
@@ -309,37 +317,47 @@ const EditDokter = ({navigation, route}) => {
                     {errors.keterangan && touched.keterangan ? (
                         <Text style={tw`text-red-500`}>{errors.keterangan}</Text>
                     ) : null}
-                    <RichToolbar
-                        style={[styles.richBar]}
-                        editor={RichText}
-                        disabled={false}
-                        iconSize={25}
-                        selectedIconTint={"blue"}
-                        actions={[
-                            ...defaultActions,
-                            actions.heading1,
-                        ]}
-                        iconMap={{
-                            [actions.heading1]: ({ tintColor }) => (
-                                <Text style={[styles.tib, { color: tintColor }]}>H1</Text>
-                            ),
-                        }}
-                    />
-                    <RichEditor
-                        disabled={false}
-                        containerStyle={styles.editor}
-                        initialContentHTML={values.keterangan}
-                        ref={RichText}
-                        style={styles.rich}
-                        placeholder={"Keterangan Dokter"}
-                        onChange={(text) => setFieldValue('keterangan', text)}
-                    />
-                    <Text></Text>
+                    
+                        {!loadPage ? ( 
+                            <View>
+                                <RichToolbar
+                                    style={[styles.richBar]}
+                                    editor={RichText}
+                                    disabled={false}
+                                    iconSize={25}
+                                    selectedIconTint={"blue"}
+                                    actions={[
+                                        ...defaultActions,
+                                        actions.heading1,
+                                    ]}
+                                    iconMap={{
+                                        [actions.heading1]: ({ tintColor }) => (
+                                            <Text style={[styles.tib, { color: tintColor }]}>H1</Text>
+                                        ),
+                                    }}
+                                />
+                                <RichEditor
+                                    disabled={false}
+                                    containerStyle={styles.editor}
+                                    initialContentHTML={values.keterangan}
+                                    ref={RichText}
+                                    style={styles.rich}
+                                    placeholder={"Keterangan Dokter"}
+                                    onChange={(text) => setFieldValue('keterangan', text)}
+                                />
+                                <Text></Text>
+                            </View>
+                        ) : (
+                            ""
+                        )}
                 </ScrollView>
             </ScrollView>
             <TouchableOpacity 
                 style={tw`bg-red-500 p-2 mx-4 my-4 rounded-lg`}
-                onPress={handleSubmit}
+                onPress={() => {
+                    setLoadPage(true);
+                    handleSubmit();
+                }}
             >
                 <Text style={tw`text-white text-center text-lg`}>Simpan</Text>
             </TouchableOpacity>
