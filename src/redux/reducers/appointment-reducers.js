@@ -1,6 +1,7 @@
 import {
     HISTORY_APPOINTMENT, QUEUE_APPOINTMENT
 } from "../types/appointment";
+// 
 
 const initialState = {
     load_appointment: true,

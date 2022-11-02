@@ -40,9 +40,9 @@ const Queue = ({navigation, route}) => {
                         <Text style={tw`mb-1`}>Waktu :  {format(new Date(date), 'dd/MM/yyyy HH:mm')}</Text>
                         {queue.length < 10 ? (
                             <View style={tw`flex flex-row`}>
-                                <Text>Sisa kuota antrian </Text>
+                                <Text>Sisa Kuota Antrian </Text>
                                 <Text style={tw`text-black font-bold`}>{10 - queue.length} </Text>
-                                <Text>dari</Text>
+                                <Text>Dari</Text>
                                 <Text style={tw`text-black font-bold`}> 10</Text>
                             </View>
 

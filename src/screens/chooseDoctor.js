@@ -31,7 +31,7 @@ const ChooseDoctor = ({navigation, route}) => {
         loadData();
     }, []);
 
-    const {values, setFieldValue, handleSubmit, handleReset, errors, touched} = useFormik({
+    const {values, setFieldValue, handleSubmit, errors, touched} = useFormik({
         initialValues: {
             id_user: profile.id,
             id_dokter: detail_dokter.id,
