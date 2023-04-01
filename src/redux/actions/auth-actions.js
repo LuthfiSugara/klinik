@@ -26,6 +26,7 @@ export const signIn = (data) => {
                     }
                 }
             ).then(function(response){
+                console.log('res : ', response);
                 if(response.data.status === "success"){
                     AsyncStorage.setItem('userData', JSON.stringify(response.data.access_token));
 
