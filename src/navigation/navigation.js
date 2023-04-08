@@ -21,6 +21,8 @@ import Consultation from "../screens/consultation";
 import AddConsultation from "../screens/add-consultation";
 import DetailConsultation from "../screens/detail-consultation";
 import SettingPrinter from "../screens/setting-printer";
+import Patient from "../screens/patient";
+import DetailPatient from "../screens/detail-patient";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +48,20 @@ const Navigation = () => {
                         <Stack.Screen
                             name="Home" 
                             component={Home} 
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Patient" 
+                            component={Patient} 
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
+                            name="DetailPatient" 
+                            component={DetailPatient} 
                             options={{
                                 headerShown: false
                             }}
