@@ -7,6 +7,7 @@ import {
     ADD_APPOINTMENT,
     HISTORY_APPOINTMENT,
     QUEUE_APPOINTMENT,
+    UPDATE_STATUS_APPOINTMENT,
 } from "../types/appointment";
 import { UseGetAction } from "../../utils/use-get-action";
 
@@ -94,6 +95,13 @@ export const historyAppointment = () => {
     }
 }
 
+// export const historyAppointment = () => 
+//     UseGetAction(
+//         `all-appointment`,
+//         HISTORY_APPOINTMENT,
+//         undefined
+//     );
+
 export const updateStatusAppointment = (id, id_status) => async (dispatch) => {
     try{
         let token = "";
@@ -142,6 +150,13 @@ export const updateStatusAppointment = (id, id_status) => async (dispatch) => {
         console.log(error);
     }
 }
+
+// export const updateStatusAppointment = (id, id_status) => 
+//     UseGetAction(
+//         `update-status-appointment/${id}/${id_status}`,
+//         UPDATE_STATUS_APPOINTMENT,
+//         undefined
+//     );
 
 export const getQueueAppointment = (id_dokter, date) => 
     UseGetAction(
