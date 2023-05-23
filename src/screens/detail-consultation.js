@@ -83,8 +83,8 @@ const DetailConsultation = ({navigation, route}) => {
                         </View>
                     </View>
                     
-                    {detail_consultation.detail.length > 0 ? (
-                        detail_consultation.detail.map((detail, index) => {
+                    {detail_consultation && detail_consultation.detail ? (
+                        detail_consultation.detail.length > 0 && detail_consultation.detail.map((detail, index) => {
                             return (
                                 <View style={tw`flex flex-row items-center mt-4`} key={index}>
                                     <View style={[tw`rounded`, customStyle.w10]}>

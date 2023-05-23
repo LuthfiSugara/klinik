@@ -68,8 +68,8 @@ const AddDokter = ({navigation}) => {
             formData.append('id_specialist', values.id_specialist);
             formData.append('id_level', values.id_level);
             formData.append('id_gender', values.id_gender);
-            formData.append('tanggal_lahir', "2006-10-11");
-            formData.append('mulai_praktek', "20015-10-11");
+            formData.append('tanggal_lahir', values.tanggal_lahir);
+            formData.append('mulai_praktek', values.mulai_praktek);
             formData.append('keterangan', values.keterangan);
             formData.append('biaya', splitBiaya.join(''));
 
@@ -80,15 +80,19 @@ const AddDokter = ({navigation}) => {
                     name: foto.assets[0].fileName,
                 });
             }
+            setLoadPage(true);
+            console.log('values : ', values);
 
             dispatch(register(formData))
             .then(response => {
+                console.log(response);
                 if(response.status === "success"){
-                    setLoadPage(true);
+                    setLoadPage(false);
                     navigation.navigate('Dokter');
                 }
             })
             .catch(err => console.log(err));
+            setLoadPage(false);
         },
         validationSchema: Yup.object().shape({
             nama: Yup
@@ -362,11 +366,10 @@ const AddDokter = ({navigation}) => {
             <TouchableOpacity 
                 style={tw`bg-red-500 p-3 mx-4 my-4 rounded-lg`}
                 onPress={() => {
-                    setLoadPage(true);
                     handleSubmit();
                 }}
             >
-                <Text style={tw`text-white text-center`}>Daftar</Text>
+                <Text style={tw`text-white text-center`}>Daftar asdasd</Text>
             </TouchableOpacity>
         </View>
     )

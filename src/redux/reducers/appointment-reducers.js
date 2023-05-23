@@ -1,7 +1,8 @@
 import {
-    HISTORY_APPOINTMENT, QUEUE_APPOINTMENT
+    HISTORY_APPOINTMENT, 
+    QUEUE_APPOINTMENT,
+    UPDATE_STATUS_APPOINTMENT
 } from "../types/appointment";
-// 
 
 const initialState = {
     load_appointment: true,
@@ -23,6 +24,12 @@ const appointmentReducers = (state = initialState, action) => {
                 ...state,
                 load_appointment: false,
                 queue: action.payload.data
+            }
+        case UPDATE_STATUS_APPOINTMENT: 
+            return {
+                ...state,
+                load_appointment: false,
+                history_appointment: action.payload.data
             }
         default:
             return state;

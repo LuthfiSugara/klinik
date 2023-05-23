@@ -51,10 +51,14 @@ const DoctorAppointment = ({navigation}) => {
                             </View>
                             <View style={[tw`pl-0`, customStyle.w70]}>
                                 <Text style={tw`text-black`}>{d.nama}</Text>
-                                <Text style={tw`text-xs text-gray-400 mb-1`}>{d.detail.specialist.name}</Text>
+                                {d.detail ? (
+                                    <Text style={tw`text-xs text-gray-400 mb-1`}>{d.detail.specialist ? d.detail.specialist.name : "-"}</Text>
+                                ) : (
+                                    <Text style={tw`text-xs text-gray-400 mb-1`}>-</Text>
+                                )}
                                 <View style={tw`flex flex-row items-center`}>
                                     <Icon name="briefcase" size={15} color="#767272" style={tw`mr-1`} solid />
-                                    <Text style={tw`text-xs`}>{d.detail.lama_kerja ? d?.detail?.lama_kerja : ""}</Text>
+                                    <Text style={tw`text-xs`}>{d.detail ? d?.detail?.lama_kerja : "-"}</Text>
                                 </View>
                                 <Pressable
                                     onPress={() => redirectToChooseDoctor(d.id)}
