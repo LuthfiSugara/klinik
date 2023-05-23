@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, Image, Pressable, ScrollView, Text, TouchableOpacity, View, Linking } from 'react-native'
+import { ActivityIndicator, Alert, Image, Pressable, ScrollView, Text, TouchableOpacity, View, Modal } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector } from 'react-redux';
 import tw from 'twrnc';
@@ -10,12 +10,15 @@ import { baseUrl } from '../utils/global';
 import { customStyle } from '../utils/global-style';
 import { BluetoothEscposPrinter, BluetoothTscPrinter } from 'react-native-bluetooth-escpos-printer';
 import { formatRupiah } from '../utils/function';
+import QRCode from 'react-native-qrcode-svg';
 
 const History = ({navigation}) => {
     const dispatch = useDispatch();
     const {history_appointment} = useSelector((state) => state.appointmentReducers);
     const {profile} = useSelector((state) => state.authReducers);
     const [loadPage, setLoadPage] = useState(false);
+    const [modalBarcode, setModalBarcode] = useState(false);
+    const [price, setPrice] = useState("");
 
     const loadData = async() => {
        await dispatch(historyAppointment());
@@ -37,6 +40,10 @@ const History = ({navigation}) => {
     useEffect(() => {
         loadData();
     }, []);
+
+    const hideModalBarcode = () => {
+        setModalBarcode(false);
+    }
 
     const printPayment = async(nominal) => {
         nominal = formatRupiah(nominal);
@@ -135,7 +142,7 @@ const History = ({navigation}) => {
                 <Text style={tw``}>History Pasien</Text>
                 <Text></Text>
             </View>
-
+            
             <ScrollView>
                 <View style={tw`p-4`}>
                     {history_appointment.length > 0 ? (
@@ -144,7 +151,6 @@ const History = ({navigation}) => {
                                 <View style={tw`mb-4`} key={index}>
                                     <View style={tw`flex flex-row justify-between items-center`}>
                                         <Text style={tw`text-lg text-gray-700`}>{format(new Date(history.created_at), 'dd/MM/yyyy')}</Text>
-                                        {/* <Text style={tw`${history.status.id == 1 || history.status.id == 4 ? 'text-green-500' : history.status.id == 2 ? 'text-yellow-500' : 'text-red-500'} rounded`}>{history.status.name}</Text> */}
                                     </View>
                                     <Text>|</Text>
                                     <Text>|</Text>
@@ -155,11 +161,21 @@ const History = ({navigation}) => {
                                                 <Text style={tw`px-2`}>{format(new Date(history.tanggal_berkunjung), 'dd/MM/yyyy HH:mm:ss')}</Text>
                                             </View>
                                             {/* {profile.id_level == 1 ? ( */}
+                                            <View style={tw`flex flex-row justify-end`}>
                                                 <TouchableOpacity onPress={() => {
                                                     printQueue(history.nomor_urut);
-                                                }} style={tw`px-2`}>
-                                                    <Text style={tw`bg-blue-500 text-white p-2 rounded`}>Cetak Antrian</Text>
+                                                }} style={tw`pr-1`}>
+                                                    <Text style={tw`bg-blue-500 text-white p-1 rounded`}>Antrian</Text>
                                                 </TouchableOpacity>
+
+                                                <TouchableOpacity 
+                                                onPress={() => {
+                                                    setPrice(history.biaya);
+                                                    setModalBarcode(true);
+                                                }} style={tw`pr-1`}>
+                                                    <Text style={tw`bg-black text-white p-1 rounded`}>Barcode</Text>
+                                                </TouchableOpacity>
+                                                </View>
                                             {/* ) : (
                                                 null
                                             )} */}
@@ -174,82 +190,6 @@ const History = ({navigation}) => {
                                             <View style={tw`flex flex-col`}>
                                                 <View style={tw`flex flex-row`}>
                                                     <Text>{history.diagnosa}</Text>
-                                                </View>
-                                                <View style={tw`flex flex-row mt-2`}>
-                                                    {/* {history.status.id == 2 
-                                                    && history.id_user == profile.id
-                                                    &&  */}
-                                                    {/* <TouchableOpacity onPress={() => {
-                                                        Alert.alert(
-                                                            "Batalkan Kunjungan",
-                                                            "Apakah anda yakin ?",
-                                                            [
-                                                                { text: "Tidak" },
-                                                                { text: "Ya", onPress: () => {
-                                                                    updateStatus(history.id, 3)
-                                                                }}
-                                                            ]
-                                                        )}
-                                                    } 
-                                                    style={tw`bg-red-500 py-2 px-4 mx-1 rounded`}>
-                                                            <Text style={tw`text-white text-center`}>Batal</Text>
-                                                        </TouchableOpacity> */}
-                                                    {/* } */}
-                                                    
-                                                    {/* {history.status.id == 2 ? (
-                                                        history.id_dokter == profile.id
-                                                        || profile.id_level == 1 ? ( */}
-                                                            {/* <TouchableOpacity onPress={() => {
-                                                                Alert.alert(
-                                                                    "Konfirmasi Kunjungan",
-                                                                    "Apakah anda yakin ?",
-                                                                    [
-                                                                        { text: "Tidak" },
-                                                                        { text: "Ya", onPress: () => {
-                                                                            updateStatus(history.id, 4)
-                                                                        }}
-                                                                    ]
-                                                                )}
-                                                            } style={tw`bg-green-500 py-2 px-4 mx-1 rounded`}>
-                                                                <Text style={tw`text-white text-center`}>Konfirmasi</Text>
-                                                            </TouchableOpacity> */}
-                                                        {/* ) : (
-                                                            null
-                                                        )
-                                                    ) : (
-                                                        null
-                                                    )} */}
-
-                                                    {/* {history.status.id === 4 ? (
-                                                        profile.id == history.id_dokter
-                                                        || profile.id_level == 1  ? ( */}
-                                                            {/* <TouchableOpacity onPress={() => {
-                                                                Alert.alert(
-                                                                    "Kunjungan Selesai",
-                                                                    "Apakah anda yakin ?",
-                                                                    [
-                                                                        { text: "Tidak" },
-                                                                        { text: "Ya", onPress: () => {
-                                                                            updateStatus(history.id, 1)
-                                                                        }}
-                                                                    ]
-                                                                )}
-                                                            } style={tw`bg-green-500 py-2 px-4 mx-1 rounded`}>
-                                                                <Text style={tw`text-white text-center`}>Selesai</Text>
-                                                            </TouchableOpacity> */}
-                                                        {/* ) : (
-                                                            null
-                                                        )
-                                                    ) : (
-                                                        null
-                                                    )} */}
-
-                                                    {/* {profile.id_level == 1 && history.status.id == 1 &&  */}
-                                                        {/* <TouchableOpacity onPress={() => printPayment(history?.dokter?.detail?.biaya)} 
-                                                        style={tw`bg-green-500 py-2 px-4 mx-1 rounded`}>
-                                                            <Text style={tw`text-white text-center`}>Cetak Pembayaran</Text>
-                                                        </TouchableOpacity> */}
-                                                    {/* } */}
                                                 </View>
                                             </View>
                                         </View>
@@ -268,6 +208,26 @@ const History = ({navigation}) => {
                     )}
                 </View>
             </ScrollView>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalBarcode}
+                onRequestClose={() => {
+                    setModalBarcode(false);
+                }}
+            >
+                <View style={customStyle.centeredView}>
+                    <TouchableOpacity onPress={() => {setModalBarcode(false)}} style={tw`flex flex-row justify-end w-full`}>
+                        <Text style={[tw`text-right rounded-full py-3 px-4 mr-4 mb-2 text-black font-bold`, customStyle.shadow]}>X</Text>
+                    </TouchableOpacity>
+                    <View style={customStyle.modalView}>
+                        <View style={tw`flex flex-row justify-center mt-4`}>
+                            <QRCode value={price} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
         </View>
     )
 }

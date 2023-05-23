@@ -24,7 +24,13 @@ const Login = ({navigation}) => {
             device_name: DeviceInfo.getBrand()
         },
         onSubmit: values => {
-            return dispatch(signIn(values));
+            dispatch(signIn(values))
+            .then(response => {
+                console.log('values : ', values);
+                console.log('response : ', response);
+            })
+            .catch(err => console.log('err : ', err));
+            
             // handleReset();
         },
         validationSchema: Yup.object().shape({

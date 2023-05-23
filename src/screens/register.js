@@ -67,6 +67,7 @@ const Register = ({navigation}) => {
             console.log("form",formData);
             dispatch(register(formData))
             .then(response => {
+                console.log('res register : ', response.data);
                 if(response.status === "success"){
                     navigation.navigate('Login');
                 }

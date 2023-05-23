@@ -69,14 +69,14 @@ const Home = ({navigation}) => {
                 <View style={tw`w-full mt-8 px-4 flex flex-row flex-wrap justify-center items-center`}>
                     {profile.id_level === 1 && (
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('Specialist')}
+                            onPress={() => navigation.navigate('Patient')}
                             style={tw`w-2/6 px-4 py-4 m-2 items-center rounded-xl`}
                         >
                             <Image
                                 style={tw`w-20 h-20 rounded-full`}
-                                source={require('../assets/images/specialist.jpg')}
+                                source={require('../assets/images/patient.jpg')}
                             />
-                            <Text style={tw`font-semibold text-gray-600 text-center`}>Spesialis</Text>
+                            <Text style={tw`font-semibold text-gray-600 text-center`}>Pasien</Text>
                         </TouchableOpacity>
                     )}
                     <TouchableOpacity
@@ -89,6 +89,18 @@ const Home = ({navigation}) => {
                         />
                         <Text style={tw`font-semibold text-gray-600 text-center`}>Dokter</Text>
                     </TouchableOpacity>
+                    {profile.id_level === 1 && (
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('Specialist')}
+                            style={tw`w-2/6 px-4 py-4 m-2 items-center rounded-xl`}
+                        >
+                            <Image
+                                style={tw`w-20 h-20 rounded-full`}
+                                source={require('../assets/images/specialist.jpg')}
+                            />
+                            <Text style={tw`font-semibold text-gray-600 text-center`}>Spesialis</Text>
+                        </TouchableOpacity>
+                    )}
                     {profile.id_level === 2 && (
                         <TouchableOpacity
                             onPress={() => navigation.navigate('DoctorAppointment')}
