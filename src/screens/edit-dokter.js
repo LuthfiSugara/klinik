@@ -60,17 +60,15 @@ const EditDokter = ({navigation, route}) => {
 
     const [date, setDate] = useState(new Date(format(new Date(detail_dokter.tanggal_lahir), 'yyyy'), format(new Date(detail_dokter.tanggal_lahir), 'M') - 1, format(new Date(detail_dokter.tanggal_lahir), 'd')));
     const [startWork, setStartWork] = useState(
-        detail_dokter?.detail ? 
-            new Date(
-                format(new Date(detail_dokter?.detail?.mulai_praktek), 'yyyy'), 
-                format(new Date(detail_dokter?.detail?.mulai_praktek), 'M') - 1, 
-                format(new Date(detail_dokter?.detail?.mulai_praktek), 'd')
-            )
-            : new Date(
-                format(new Date(), 'yyyy'), 
-                format(new Date(), 'M') - 1, 
-                format(new Date(), 'd')
-            )
+        detail_dokter?.detail ? new Date(
+            format(new Date(detail_dokter?.detail?.mulai_praktek), 'yyyy'), 
+            format(new Date(detail_dokter?.detail?.mulai_praktek), 'M') - 1, 
+            format(new Date(detail_dokter?.detail?.mulai_praktek), 'd')
+        ) : new Date(
+            format(new Date(), 'yyyy'), 
+            format(new Date(), 'M') - 1, 
+            format(new Date(), 'd')
+        )
     );
     const [previewImage, setPreviewImage] = useState(baseUrl + detail_dokter.foto);
 
@@ -106,11 +104,13 @@ const EditDokter = ({navigation, route}) => {
                     name: foto.assets[0].fileName,
                 });
             }
+            console.log(values);
             setLoadPage(true);
             dispatch(editDokter(formData, idDokter))
             .then(response => {
+                console.log(response);
                 if(response.status === "success"){
-                    setLoadPage(false);
+                    setLoadPage(true);
                     navigation.goBack();
                 }
             })
