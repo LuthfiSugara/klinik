@@ -22,6 +22,7 @@ export const signIn = (data) => {
                 data,
                 {
                     headers: {
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     }
                 }
@@ -59,6 +60,7 @@ export const signIn = (data) => {
 
 export const isLoggedIn = () => {
     try{
+        console.log("is Loggedin");
         return async dispatch => {
             await AsyncStorage.getItem('userData')
             .then(value => {
