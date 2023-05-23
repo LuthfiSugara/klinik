@@ -87,12 +87,11 @@ const AddDokter = ({navigation}) => {
             .then(response => {
                 console.log(response);
                 if(response.status === "success"){
-                    setLoadPage(false);
+                    setLoadPage(true);
                     navigation.navigate('Dokter');
                 }
             })
             .catch(err => console.log(err));
-            setLoadPage(false);
         },
         validationSchema: Yup.object().shape({
             nama: Yup
@@ -369,7 +368,7 @@ const AddDokter = ({navigation}) => {
                     handleSubmit();
                 }}
             >
-                <Text style={tw`text-white text-center`}>Daftar asdasd</Text>
+                <Text style={tw`text-white text-center`}>Daftar</Text>
             </TouchableOpacity>
         </View>
     )

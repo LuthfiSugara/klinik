@@ -59,7 +59,19 @@ const EditDokter = ({navigation, route}) => {
     }, []);
 
     const [date, setDate] = useState(new Date(format(new Date(detail_dokter.tanggal_lahir), 'yyyy'), format(new Date(detail_dokter.tanggal_lahir), 'M') - 1, format(new Date(detail_dokter.tanggal_lahir), 'd')));
-    const [startWork, setStartWork] = useState(new Date(format(new Date(detail_dokter?.detail?.mulai_praktek), 'yyyy'), format(new Date(detail_dokter?.detail?.mulai_praktek), 'M') - 1, format(new Date(detail_dokter?.detail?.mulai_praktek), 'd')));
+    const [startWork, setStartWork] = useState(
+        detail_dokter?.detail ? 
+            new Date(
+                format(new Date(detail_dokter?.detail?.mulai_praktek), 'yyyy'), 
+                format(new Date(detail_dokter?.detail?.mulai_praktek), 'M') - 1, 
+                format(new Date(detail_dokter?.detail?.mulai_praktek), 'd')
+            )
+            : new Date(
+                format(new Date(), 'yyyy'), 
+                format(new Date(), 'M') - 1, 
+                format(new Date(), 'd')
+            )
+    );
     const [previewImage, setPreviewImage] = useState(baseUrl + detail_dokter.foto);
 
     const {values, setFieldValue, handleSubmit, handleReset, errors, touched} = useFormik({
@@ -69,9 +81,9 @@ const EditDokter = ({navigation, route}) => {
             id_specialist: detail_dokter?.detail?.id_specialist,
             id_gender: detail_dokter.id_gender,
             tanggal_lahir: detail_dokter.tanggal_lahir,
-            mulai_praktek: detail_dokter?.detail?.mulai_praktek,
-            keterangan: detail_dokter?.detail?.keterangan,
-            biaya: formatRupiah(detail_dokter?.detail?.biaya),
+            mulai_praktek: detail_dokter?.detail ? detail_dokter?.detail?.mulai_praktek : new Date(),
+            keterangan: detail_dokter?.detail ? detail_dokter?.detail?.keterangan : "",
+            biaya: formatRupiah(detail_dokter?.detail ? detail_dokter?.detail?.biaya : 0),
         },
         onSubmit: values => {
             let splitBiaya = values.biaya.split(".");
@@ -94,11 +106,11 @@ const EditDokter = ({navigation, route}) => {
                     name: foto.assets[0].fileName,
                 });
             }
-
+            setLoadPage(true);
             dispatch(editDokter(formData, idDokter))
             .then(response => {
                 if(response.status === "success"){
-                    setLoadPage(true);
+                    setLoadPage(false);
                     navigation.goBack();
                 }
             })
@@ -355,7 +367,6 @@ const EditDokter = ({navigation, route}) => {
             <TouchableOpacity 
                 style={tw`bg-red-500 p-2 mx-4 my-4 rounded-lg`}
                 onPress={() => {
-                    setLoadPage(true);
                     handleSubmit();
                 }}
             >
